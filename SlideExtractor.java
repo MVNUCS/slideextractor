@@ -19,12 +19,12 @@ public class SlideExtractor {
 		System.out.println("Usage: slideextractor <filename> <output_image_format>");
 	}
 
-	public static void main (String[] args) throws FileNotFoundException, IOException, IllegalArgumentException {
- 		if (args.length == 0) {
+	public static void main(String[] args) throws FileNotFoundException, IOException, IllegalArgumentException {
+		if (args.length == 0) {
 			usage();
 			return;
 		}
-		
+
 		System.out.println(args[0]);
 		System.out.println("User Working Dir: " + System.getProperty("user.dir"));
 		String classpath = System.getProperty("java.class.path");
@@ -37,27 +37,28 @@ public class SlideExtractor {
 		Dimension pgsize = pptx.getPageSize();
 
 		int idx = 1;
-        String output_image_format = "png";		
-        if (args.length == 2) {
-        	output_image_format = args[1].toLowerCase();
-        }
-		
-		if (!output_image_format.equals("png") && !output_image_format.equals("jpeg") && !output_image_format.equals("gif")) {
+		String output_image_format = "jpeg";
+		if (args.length == 2) {
+			output_image_format = args[1].toLowerCase();
+		}
+
+		if (!output_image_format.equals("png") && !output_image_format.equals("jpeg")
+				&& !output_image_format.equals("gif")) {
 			throw new IllegalArgumentException("Invalid output format" + output_image_format);
 		}
 
 		for (XSLFSlide slide : pptx.getSlides()) {
 			BufferedImage img = new BufferedImage(pgsize.width, pgsize.height, BufferedImage.TYPE_INT_RGB);
 			Graphics2D graphics = img.createGraphics();
-			
-			// clear the drawing area
-		    graphics.setPaint(Color.white);
-		    graphics.fill(new Rectangle2D.Double(0, 0, pgsize.width, pgsize.height));
 
-			//render
+			// clear the drawing area
+			graphics.setPaint(Color.white);
+			graphics.fill(new Rectangle2D.Double(0, 0, pgsize.width, pgsize.height));
+
+			// render
 			slide.draw(graphics);
-			
-			//save the output
+
+			// save the output
 			FileOutputStream out = new FileOutputStream("slide-" + idx + "." + output_image_format);
 			javax.imageio.ImageIO.write(img, output_image_format, out);
 			out.close();
@@ -67,5 +68,5 @@ public class SlideExtractor {
 
 		is.close();
 		return;
-    }
+	}
 }
